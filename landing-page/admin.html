@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Landing Page 管理后台</title>
+  <style>
+    :root {
+      --bg: #0e1116;
+      --card: #151a23;
+      --primary: #3ec9a7;
+      --primary-strong: #27c29a;
+      --text: #e8edf5;
+      --sub: #9aa5b5;
+      --border: #1f2733;
+      --muted: #0a0d12;
+      --success: #3ec9a7;
+      --warning: #f59e0b;
+      --error: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Inter", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 280px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 24px;
+      overflow-y: auto;
+    }
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-header img {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+    }
+    .sidebar-header h2 {
+      font-size: 18px;
+    }
+    .nav-menu {
+      list-style: none;
+    }
+    .nav-item {
+      margin-bottom: 8px;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--sub);
+      text-decoration: none;
+      border-radius: 10px;
+      transition: all 0.2s;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .nav-link:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+    }
+    .nav-link.active {
+      background: linear-gradient(135deg, rgba(62,201,167,0.15), rgba(62,201,167,0.05));
+      color: var(--primary);
+      border: 1px solid rgba(62,201,167,0.3);
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px;
+      overflow-y: auto;
+    }
+    .page-header {
+      margin-bottom: 32px;
+    }
+    .page-header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .page-header p {
+      color: var(--sub);
+      font-size: 14px;
+    }
+    .form-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .form-section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(255,255,255,0.08);
+    }
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .form-group small {
+      display: block;
+      margin-top: 6px;
+      color: var(--sub);
+      font-size: 12px;
+    }
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-strong) 100%);
+      color: #0c1016;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(62,201,167,0.28);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .alert {
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .alert-success {
+      background: rgba(62,201,167,0.15);
+      color: var(--success);
+      border: 1px solid rgba(62,201,167,0.3);
+    }
+    .alert-error {
+      background: rgba(239,68,68,0.15);
+      color: var(--error);
+      border: 1px solid rgba(239,68,68,0.3);
+    }
+    .preview-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #0c1016;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(62,201,167,0.28);
+      transition: all 0.2s;
+    }
+    .preview-btn:hover {
+      transform: scale(1.1);
+    }
+    .page-content {
+      display: none;
+    }
+    .page-content.active {
+      display: block;
+    }
+    .lang-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .lang-tab {
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      color: var(--sub);
+      cursor: pointer;
+      font-size: 14px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .lang-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .lang-content {
+      display: none;
+    }
+    .lang-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img src="./image-jyue18oAlt6vKmINRNSUo.png" alt="Logo">
+        <h2>Landing Page<br/>管理后台</h2>
+      </div>
+      <nav>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a class="nav-link active" data-page="home">🏠 主页内容</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-page="video">🎥 视频设置</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-page="downloads">📥 下载链接</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-page="pricing">💰 定价信息</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-page="agreements">📄 协议内容</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-page="translations">🌐 多语言</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-page="theme">🎨 主题设置</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <!-- 主页内容 -->
+      <div id="home-page" class="page-content active">
+        <div class="page-header">
+          <h1>主页内容管理</h1>
+          <p>编辑主页的标题、描述、特性等内容</p>
+        </div>
+
+        <div id="home-alert"></div>
+
+        <div class="form-section">
+          <div class="form-section-title">Hero 区域</div>
+          <div class="form-group">
+            <label>标签语</label>
+            <input type="text" id="hero-tagline" placeholder="守护孩子，也守护安心">
+          </div>
+          <div class="form-group">
+            <label>主标题</label>
+            <textarea id="hero-title" placeholder="以双端协同 + 安全后端，打造可信的儿童手机管理体验"></textarea>
+          </div>
+          <div class="form-group">
+            <label>描述</label>
+            <textarea id="hero-desc" placeholder="家长端决策、儿童端执行，配合多重防护和精细化策略，实时守护孩子的数字世界。"></textarea>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">特性标签</div>
+          <div class="form-group">
+            <label>标签 1</label>
+            <input type="text" id="chip-1" placeholder="19个 REST API · 高可用">
+          </div>
+          <div class="form-group">
+            <label>标签 2</label>
+            <input type="text" id="chip-2" placeholder="防卸载保护 · 设备管理员">
+          </div>
+          <div class="form-group">
+            <label>标签 3</label>
+            <input type="text" id="chip-3" placeholder="实时/历史轨迹 · 安全围栏">
+          </div>
+          <div class="form-group">
+            <label>标签 4</label>
+            <input type="text" id="chip-4" placeholder="应用锁定 · 屏幕时间">
+          </div>
+          <div class="form-group">
+            <label>标签 5</label>
+            <input type="text" id="chip-5" placeholder="JWT双令牌 · AES加密">
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveHomeContent()">保存更改</button>
+          <button class="btn btn-secondary" onclick="loadHomeContent()">重置</button>
+        </div>
+      </div>
+
+      <!-- 视频设置 -->
+      <div id="video-page" class="page-content">
+        <div class="page-header">
+          <h1>视频设置</h1>
+          <p>配置主页视频播放链接和参数</p>
+        </div>
+
+        <div id="video-alert"></div>
+
+        <div class="form-section">
+          <div class="form-section-title">视频配置</div>
+          <div class="form-group">
+            <label>视频 URL</label>
+            <input type="url" id="video-url" placeholder="https://example.com/video.mp4">
+            <small>支持 MP4、WebM 等格式</small>
+          </div>
+          <div class="form-group">
+            <label>封面图片 URL</label>
+            <input type="url" id="video-poster" placeholder="https://example.com/poster.jpg">
+            <small>视频加载前的封面图</small>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="video-autoplay" checked> 自动播放
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="video-muted" checked> 静音播放
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="video-loop" checked> 循环播放
+            </label>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveVideoSettings()">保存更改</button>
+          <button class="btn btn-secondary" onclick="loadVideoSettings()">重置</button>
+        </div>
+      </div>
+
+      <!-- 下载链接 -->
+      <div id="downloads-page" class="page-content">
+        <div class="page-header">
+          <h1>下载链接管理</h1>
+          <p>配置家长端和儿童端的下载链接</p>
+        </div>
+
+        <div id="downloads-alert"></div>
+
+        <div class="form-section">
+          <div class="form-section-title">家长端 App</div>
+          <div class="form-group">
+            <label>APK 下载链接</label>
+            <input type="url" id="parent-apk-url" placeholder="https://example.com/parent.apk">
+          </div>
+          <div class="form-group">
+            <label>更新日志链接</label>
+            <input type="url" id="parent-changelog-url" placeholder="https://example.com/changelog">
+          </div>
+          <div class="form-group">
+            <label>二维码图片 URL</label>
+            <input type="url" id="parent-qr-url" placeholder="https://example.com/qr-parent.png">
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">儿童端 App</div>
+          <div class="form-group">
+            <label>APK 下载链接</label>
+            <input type="url" id="child-apk-url" placeholder="https://example.com/child.apk">
+          </div>
+          <div class="form-group">
+            <label>安装指引链接</label>
+            <input type="url" id="child-guide-url" placeholder="https://example.com/install-guide">
+          </div>
+          <div class="form-group">
+            <label>二维码图片 URL</label>
+            <input type="url" id="child-qr-url" placeholder="https://example.com/qr-child.png">
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveDownloads()">保存更改</button>
+          <button class="btn btn-secondary" onclick="loadDownloads()">重置</button>
+        </div>
+      </div>
+
+      <!-- 定价信息 -->
+      <div id="pricing-page" class="page-content">
+        <div class="page-header">
+          <h1>定价信息管理</h1>
+          <p>编辑定价页面的内容</p>
+        </div>
+
+        <div id="pricing-alert"></div>
+
+        <div class="form-section">
+          <div class="form-section-title">个人/家庭订阅</div>
+          <div class="form-group">
+            <label>基础版价格</label>
+            <input type="text" id="pricing-basic" placeholder="¥60/年（≈¥5/月）· 1台 · 5GB">
+          </div>
+          <div class="form-group">
+            <label>标准版价格</label>
+            <input type="text" id="pricing-standard" placeholder="¥180/年（≈¥15/月）· 3台 · 20GB">
+          </div>
+          <div class="form-group">
+            <label>高级版价格</label>
+            <input type="text" id="pricing-premium" placeholder="¥360/年（≈¥30/月）· 5台 · 50GB">
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">设备扩展包</div>
+          <div class="form-group">
+            <label>+1台价格</label>
+            <input type="text" id="device-1" placeholder="¥72/年 · 适合临时新增">
+          </div>
+          <div class="form-group">
+            <label>+3台价格</label>
+            <input type="text" id="device-3" placeholder="¥180/年 · 省17%">
+          </div>
+          <div class="form-group">
+            <label>+5台价格</label>
+            <input type="text" id="device-5" placeholder="¥264/年 · 省27%">
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="savePricing()">保存更改</button>
+          <button class="btn btn-secondary" onclick="loadPricing()">重置</button>
+        </div>
+      </div>
+
+      <!-- 协议内容 -->
+      <div id="agreements-page" class="page-content">
+        <div class="page-header">
+          <h1>协议内容管理</h1>
+          <p>编辑用户协议、隐私政策等内容</p>
+        </div>
+
+        <div id="agreements-alert"></div>
+
+        <div class="form-section">
+          <div class="form-section-title">用户协议</div>
+          <div class="form-group">
+            <label>协议标题</label>
+            <input type="text" id="agreement-user-title" placeholder="用户协议">
+          </div>
+          <div class="form-group">
+            <label>协议内容</label>
+            <textarea id="agreement-user-content" rows="10" placeholder="输入用户协议内容..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">隐私政策</div>
+          <div class="form-group">
+            <label>政策标题</label>
+            <input type="text" id="agreement-privacy-title" placeholder="隐私政策">
+          </div>
+          <div class="form-group">
+            <label>政策内容</label>
+            <textarea id="agreement-privacy-content" rows="10" placeholder="输入隐私政策内容..."></textarea>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveAgreements()">保存更改</button>
+          <button class="btn btn-secondary" onclick="loadAgreements()">重置</button>
+        </div>
+      </div>
+
+      <!-- 多语言 -->
+      <div id="translations-page" class="page-content">
+        <div class="page-header">
+          <h1>多语言管理</h1>
+          <p>编辑中英文翻译内容</p>
+        </div>
+
+        <div id="translations-alert"></div>
+
+        <div class="lang-tabs">
+          <button class="lang-tab active" data-lang="zh-CN">中文</button>
+          <button class="lang-tab" data-lang="en">English</button>
+        </div>
+
+        <div id="zh-CN-content" class="lang-content active">
+          <div class="form-section">
+            <div class="form-section-title">中文翻译</div>
+            <div class="form-group">
+              <label>徽章文本</label>
+              <input type="text" id="trans-zh-badge" placeholder="全栈一体 · 儿童手机管理">
+            </div>
+            <div class="form-group">
+              <label>预约演示</label>
+              <input type="text" id="trans-zh-cta-demo" placeholder="预约演示">
+            </div>
+            <div class="form-group">
+              <label>主页标签</label>
+              <input type="text" id="trans-zh-tab-home" placeholder="主页">
+            </div>
+            <div class="form-group">
+              <label>定价标签</label>
+              <input type="text" id="trans-zh-tab-pricing" placeholder="定价">
+            </div>
+          </div>
+        </div>
+
+        <div id="en-content" class="lang-content">
+          <div class="form-section">
+            <div class="form-section-title">English Translation</div>
+            <div class="form-group">
+              <label>Badge Text</label>
+              <input type="text" id="trans-en-badge" placeholder="Full-stack · Parental control for kids">
+            </div>
+            <div class="form-group">
+              <label>Book Demo</label>
+              <input type="text" id="trans-en-cta-demo" placeholder="Book a demo">
+            </div>
+            <div class="form-group">
+              <label>Home Tab</label>
+              <input type="text" id="trans-en-tab-home" placeholder="Home">
+            </div>
+            <div class="form-group">
+              <label>Pricing Tab</label>
+              <input type="text" id="trans-en-tab-pricing" placeholder="Pricing">
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveTranslations()">保存更改</button>
+          <button class="btn btn-secondary" onclick="loadTranslations()">重置</button>
+        </div>
+      </div>
+
+      <!-- 主题设置 -->
+      <div id="theme-page" class="page-content">
+        <div class="page-header">
+          <h1>主题设置</h1>
+          <p>自定义主页的颜色主题</p>
+        </div>
+
+        <div id="theme-alert"></div>
+
+        <div class="form-section">
+          <div class="form-section-title">颜色配置</div>
+          <div class="form-group">
+            <label>主色调</label>
+            <input type="color" id="theme-primary" value="#3ec9a7">
+          </div>
+          <div class="form-group">
+            <label>强调色</label>
+            <input type="color" id="theme-primary-strong" value="#27c29a">
+          </div>
+          <div class="form-group">
+            <label>背景色</label>
+            <input type="color" id="theme-bg" value="#0e1116">
+          </div>
+          <div class="form-group">
+            <label>卡片背景</label>
+            <input type="color" id="theme-card" value="#151a23">
+          </div>
+          <div class="form-group">
+            <label>文本颜色</label>
+            <input type="color" id="theme-text" value="#e8edf5">
+          </div>
+          <div class="form-group">
+            <label>次要文本</label>
+            <input type="color" id="theme-sub" value="#9aa5b5">
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveTheme()">保存更改</button>
+          <button class="btn btn-secondary" onclick="loadTheme()">重置</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div style="position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 12px;">
+    <button class="preview-btn" onclick="previewPage()" title="预览主页" style="position: relative; width: 60px; height: 60px;">👁️</button>
+    <button class="preview-btn" onclick="exportConfig()" title="导出配置" style="position: relative; width: 60px; height: 60px; background: linear-gradient(135deg, #3b82f6, #2563eb);">💾</button>
+    <button class="preview-btn" onclick="importConfig()" title="导入配置" style="position: relative; width: 60px; height: 60px; background: linear-gradient(135deg, #8b5cf6, #7c3aed);">📥</button>
+  </div>
+
+  <script>
+    // API 基础路径
+    const API_BASE = '/api/v1/landing-page';
+    const STORAGE_KEY = 'landing_page_config';
+    let authToken = localStorage.getItem('admin_token');
+    
+    // 检查登录状态
+    if (!authToken) {
+      // 如果没有 token，提示用户登录
+      alert('请先登录管理后台获取访问权限');
+      window.location.href = '/admin.html';
+    }
+    
+    // 从服务器读取当前配置
+    async function loadCurrentConfig() {
+      try {
+        const response = await fetch(`${API_BASE}/config`, {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+        
+        const result = await response.json();
+        
+        if (result.code === 200 && result.data) {
+          return result.data;
+        } else {
+          throw new Error(result.message || '获取配置失败');
+        }
+      } catch (error) {
+        console.error('从服务器加载配置失败，使用默认配置:', error);
+        // 如果 API 失败，尝试从 localStorage 加载
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          return JSON.parse(saved);
+        }
+        return getDefaultConfig();
+      }
+    }
+
+    function getDefaultConfig() {
+      return {
+        home: {
+          tagline: '守护孩子，也守护安心',
+          title: '以双端协同 + 安全后端，打造可信的儿童手机管理体验',
+          desc: '家长端决策、儿童端执行，配合多重防护和精细化策略，实时守护孩子的数字世界。',
+          chips: [
+            '19个 REST API · 高可用',
+            '防卸载保护 · 设备管理员',
+            '实时/历史轨迹 · 安全围栏',
+            '应用锁定 · 屏幕时间',
+            'JWT双令牌 · AES加密'
+          ]
+        },
+        video: {
+          url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+          poster: './image-jyue18oAlt6vKmINRNSUo.png',
+          autoplay: true,
+          muted: true,
+          loop: true
+        },
+        downloads: {
+          parent: {
+            apk: '',
+            changelog: '',
+            qr: ''
+          },
+          child: {
+            apk: '',
+            guide: '',
+            qr: ''
+          }
+        },
+        pricing: {
+          basic: '¥60/年（≈¥5/月）· 1台 · 5GB',
+          standard: '¥180/年（≈¥15/月）· 3台 · 20GB',
+          premium: '¥360/年（≈¥30/月）· 5台 · 50GB',
+          device1: '¥72/年 · 适合临时新增',
+          device3: '¥180/年 · 省17%',
+          device5: '¥264/年 · 省27%'
+        },
+        agreements: {
+          user: {
+            title: '用户协议',
+            content: ''
+          },
+          privacy: {
+            title: '隐私政策',
+            content: ''
+          }
+        },
+        translations: {
+          'zh-CN': {
+            badge: '全栈一体 · 儿童手机管理',
+            cta_demo: '预约演示',
+            tab_home: '主页',
+            tab_pricing: '定价'
+          },
+          'en': {
+            badge: 'Full-stack · Parental control for kids',
+            cta_demo: 'Book a demo',
+            tab_home: 'Home',
+            tab_pricing: 'Pricing'
+          }
+        },
+        theme: {
+          primary: '#3ec9a7',
+          primaryStrong: '#27c29a',
+          bg: '#0e1116',
+          card: '#151a23',
+          text: '#e8edf5',
+          sub: '#9aa5b5'
+        }
+      };
+    }
+
+    // 加载配置到表单
+    async function loadConfig() {
+      const config = await loadCurrentConfig();
+      
+      // 主页内容
+      document.getElementById('hero-tagline').value = config.home.tagline;
+      document.getElementById('hero-title').value = config.home.title;
+      document.getElementById('hero-desc').value = config.home.desc;
+      config.home.chips.forEach((chip, i) => {
+        const el = document.getElementById(`chip-${i + 1}`);
+        if (el) el.value = chip;
+      });
+
+      // 视频设置
+      document.getElementById('video-url').value = config.video.url;
+      document.getElementById('video-poster').value = config.video.poster;
+      document.getElementById('video-autoplay').checked = config.video.autoplay;
+      document.getElementById('video-muted').checked = config.video.muted;
+      document.getElementById('video-loop').checked = config.video.loop;
+
+      // 下载链接
+      document.getElementById('parent-apk-url').value = config.downloads.parent.apk;
+      document.getElementById('parent-changelog-url').value = config.downloads.parent.changelog;
+      document.getElementById('parent-qr-url').value = config.downloads.parent.qr;
+      document.getElementById('child-apk-url').value = config.downloads.child.apk;
+      document.getElementById('child-guide-url').value = config.downloads.child.guide;
+      document.getElementById('child-qr-url').value = config.downloads.child.qr;
+
+      // 定价信息
+      document.getElementById('pricing-basic').value = config.pricing.basic;
+      document.getElementById('pricing-standard').value = config.pricing.standard;
+      document.getElementById('pricing-premium').value = config.pricing.premium;
+      document.getElementById('device-1').value = config.pricing.device1;
+      document.getElementById('device-3').value = config.pricing.device3;
+      document.getElementById('device-5').value = config.pricing.device5;
+
+      // 协议内容
+      document.getElementById('agreement-user-title').value = config.agreements.user.title;
+      document.getElementById('agreement-user-content').value = config.agreements.user.content;
+      document.getElementById('agreement-privacy-title').value = config.agreements.privacy.title;
+      document.getElementById('agreement-privacy-content').value = config.agreements.privacy.content;
+
+      // 多语言
+      document.getElementById('trans-zh-badge').value = config.translations['zh-CN'].badge;
+      document.getElementById('trans-zh-cta-demo').value = config.translations['zh-CN'].cta_demo;
+      document.getElementById('trans-zh-tab-home').value = config.translations['zh-CN'].tab_home;
+      document.getElementById('trans-zh-tab-pricing').value = config.translations['zh-CN'].tab_pricing;
+      document.getElementById('trans-en-badge').value = config.translations['en'].badge;
+      document.getElementById('trans-en-cta-demo').value = config.translations['en'].cta_demo;
+      document.getElementById('trans-en-tab-home').value = config.translations['en'].tab_home;
+      document.getElementById('trans-en-tab-pricing').value = config.translations['en'].tab_pricing;
+
+      // 主题设置
+      document.getElementById('theme-primary').value = config.theme.primary;
+      document.getElementById('theme-primary-strong').value = config.theme.primaryStrong;
+      document.getElementById('theme-bg').value = config.theme.bg;
+      document.getElementById('theme-card').value = config.theme.card;
+      document.getElementById('theme-text').value = config.theme.text;
+      document.getElementById('theme-sub').value = config.theme.sub;
+    }
+
+    // 保存配置到服务器
+    async function saveConfig() {
+      const config = {
+        home: {
+          tagline: document.getElementById('hero-tagline').value,
+          title: document.getElementById('hero-title').value,
+          desc: document.getElementById('hero-desc').value,
+          chips: [
+            document.getElementById('chip-1').value,
+            document.getElementById('chip-2').value,
+            document.getElementById('chip-3').value,
+            document.getElementById('chip-4').value,
+            document.getElementById('chip-5').value
+          ]
+        },
+        video: {
+          url: document.getElementById('video-url').value,
+          poster: document.getElementById('video-poster').value,
+          autoplay: document.getElementById('video-autoplay').checked,
+          muted: document.getElementById('video-muted').checked,
+          loop: document.getElementById('video-loop').checked
+        },
+        downloads: {
+          parent: {
+            apk: document.getElementById('parent-apk-url').value,
+            changelog: document.getElementById('parent-changelog-url').value,
+            qr: document.getElementById('parent-qr-url').value
+          },
+          child: {
+            apk: document.getElementById('child-apk-url').value,
+            guide: document.getElementById('child-guide-url').value,
+            qr: document.getElementById('child-qr-url').value
+          }
+        },
+        pricing: {
+          basic: document.getElementById('pricing-basic').value,
+          standard: document.getElementById('pricing-standard').value,
+          premium: document.getElementById('pricing-premium').value,
+          device1: document.getElementById('device-1').value,
+          device3: document.getElementById('device-3').value,
+          device5: document.getElementById('device-5').value
+        },
+        agreements: {
+          user: {
+            title: document.getElementById('agreement-user-title').value,
+            content: document.getElementById('agreement-user-content').value
+          },
+          privacy: {
+            title: document.getElementById('agreement-privacy-title').value,
+            content: document.getElementById('agreement-privacy-content').value
+          }
+        },
+        translations: {
+          'zh-CN': {
+            badge: document.getElementById('trans-zh-badge').value,
+            cta_demo: document.getElementById('trans-zh-cta-demo').value,
+            tab_home: document.getElementById('trans-zh-tab-home').value,
+            tab_pricing: document.getElementById('trans-zh-tab-pricing').value
+          },
+          'en': {
+            badge: document.getElementById('trans-en-badge').value,
+            cta_demo: document.getElementById('trans-en-cta-demo').value,
+            tab_home: document.getElementById('trans-en-tab-home').value,
+            tab_pricing: document.getElementById('trans-en-tab-pricing').value
+          }
+        },
+        theme: {
+          primary: document.getElementById('theme-primary').value,
+          primaryStrong: document.getElementById('theme-primary-strong').value,
+          bg: document.getElementById('theme-bg').value,
+          card: document.getElementById('theme-card').value,
+          text: document.getElementById('theme-text').value,
+          sub: document.getElementById('theme-sub').value
+        }
+      };
+
+      // 同时保存到 localStorage 作为备份
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+      
+      // 保存到服务器
+      try {
+        const response = await fetch(`${API_BASE}/config`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify(config)
+        });
+        
+        const result = await response.json();
+        
+        if (result.code === 200) {
+          return { success: true, config, backupPath: result.data?.backupPath };
+        } else {
+          throw new Error(result.message || '保存失败');
+        }
+      } catch (error) {
+        console.error('保存到服务器失败:', error);
+        // 即使服务器保存失败，也返回配置（已保存到 localStorage）
+        return { success: false, config, error: error.message };
+      }
+    }
+
+    // 各页面的保存函数
+    async function saveHomeContent() {
+      const result = await saveConfig();
+      if (result.success) {
+        showAlert('home-alert', '主页内容已保存到服务器', 'success');
+      } else {
+        showAlert('home-alert', '保存失败: ' + result.error, 'error');
+      }
+    }
+
+    async function saveVideoSettings() {
+      const result = await saveConfig();
+      if (result.success) {
+        showAlert('video-alert', '视频设置已保存到服务器', 'success');
+      } else {
+        showAlert('video-alert', '保存失败: ' + result.error, 'error');
+      }
+    }
+
+    async function saveDownloads() {
+      const result = await saveConfig();
+      if (result.success) {
+        showAlert('downloads-alert', '下载链接已保存到服务器', 'success');
+      } else {
+        showAlert('downloads-alert', '保存失败: ' + result.error, 'error');
+      }
+    }
+
+    async function savePricing() {
+      const result = await saveConfig();
+      if (result.success) {
+        showAlert('pricing-alert', '定价信息已保存到服务器', 'success');
+      } else {
+        showAlert('pricing-alert', '保存失败: ' + result.error, 'error');
+      }
+    }
+
+    async function saveAgreements() {
+      const result = await saveConfig();
+      if (result.success) {
+        showAlert('agreements-alert', '协议内容已保存到服务器', 'success');
+      } else {
+        showAlert('agreements-alert', '保存失败: ' + result.error, 'error');
+      }
+    }
+
+    async function saveTranslations() {
+      const result = await saveConfig();
+      if (result.success) {
+        showAlert('translations-alert', '翻译内容已保存到服务器', 'success');
+      } else {
+        showAlert('translations-alert', '保存失败: ' + result.error, 'error');
+      }
+    }
+
+    async function saveTheme() {
+      const result = await saveConfig();
+      if (result.success) {
+        showAlert('theme-alert', '主题设置已保存到服务器', 'success');
+      } else {
+        showAlert('theme-alert', '保存失败: ' + result.error, 'error');
+      }
+    }
+
+    // 各页面的加载函数
+    async function loadHomeContent() {
+      await loadConfig();
+      showAlert('home-alert', '已从服务器加载最新配置', 'success');
+    }
+
+    async function loadVideoSettings() {
+      await loadConfig();
+      showAlert('video-alert', '已从服务器加载最新配置', 'success');
+    }
+
+    async function loadDownloads() {
+      await loadConfig();
+      showAlert('downloads-alert', '已从服务器加载最新配置', 'success');
+    }
+
+    async function loadPricing() {
+      await loadConfig();
+      showAlert('pricing-alert', '已从服务器加载最新配置', 'success');
+    }
+
+    async function loadAgreements() {
+      await loadConfig();
+      showAlert('agreements-alert', '已从服务器加载最新配置', 'success');
+    }
+
+    async function loadTranslations() {
+      await loadConfig();
+      showAlert('translations-alert', '已从服务器加载最新配置', 'success');
+    }
+
+    async function loadTheme() {
+      await loadConfig();
+      showAlert('theme-alert', '已从服务器加载最新配置', 'success');
+    }
+
+    // 显示提示信息
+    function showAlert(containerId, message, type) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 3000);
+    }
+
+    // 预览主页
+    function previewPage() {
+      window.open('./index.html', '_blank');
+    }
+
+    // 导出配置为 JSON
+    async function exportConfig() {
+      const result = await saveConfig();
+      const config = result.config || result;
+      const dataStr = JSON.stringify(config, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'landing-page-config.json';
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // 导入配置
+    function importConfig() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'application/json';
+      input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = async (event) => {
+            try {
+              const config = JSON.parse(event.target.result);
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+              await loadConfig();
+              alert('配置导入成功！');
+            } catch (error) {
+              alert('配置文件格式错误：' + error.message);
+            }
+          };
+          reader.readAsText(file);
+        }
+      };
+      input.click();
+    }
+
+    // 页面导航
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = link.getAttribute('data-page');
+        
+        // 更新导航状态
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        
+        // 显示对应页面
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+        const targetPage = document.getElementById(`${page}-page`);
+        if (targetPage) {
+          targetPage.classList.add('active');
+        }
+      });
+    });
+
+    // 语言标签切换
+    document.querySelectorAll('.lang-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const lang = tab.getAttribute('data-lang');
+        
+        document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        document.querySelectorAll('.lang-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(`${lang}-content`).classList.add('active');
+      });
+    });
+
+    // 初始化
+    (async () => {
+      await loadConfig();
+    })();
+  </script>
+</body>
+</html>
+
