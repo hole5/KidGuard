@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KidGuard 童卫士 | 儿童手机管理与安全守护</title>
+  <style>
+    :root {
+      --bg: #0e1116;
+      --card: #151a23;
+      --primary: #3ec9a7;
+      --primary-strong: #27c29a;
+      --text: #e8edf5;
+      --sub: #9aa5b5;
+      --border: #1f2733;
+      --muted: #0a0d12;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: radial-gradient(circle at 10% 10%, #1a2432 0, #0e1116 45%), radial-gradient(circle at 90% 20%, #152033 0, #0e1116 35%), #0e1116;
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0;
+    }
+    header {
+      padding: 64px 7vw 48px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 24px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+    }
+    .badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(62, 201, 167, 0.12);
+      color: var(--primary);
+      font-size: 13px;
+      border: 1px solid rgba(62, 201, 167, 0.4);
+    }
+    .cta {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #0c1016;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-strong) 100%);
+      font-weight: 700;
+      box-shadow: 0 12px 30px rgba(62, 201, 167, 0.28);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cta:hover { transform: translateY(-2px); box-shadow: 0 16px 38px rgba(62, 201, 167, 0.32); }
+    .ghost {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      box-shadow: none;
+      border: 1px solid var(--border);
+    }
+    main { padding: 0 7vw 96px; }
+    .hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      align-items: center;
+      padding: 32px 0 12px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 4vw, 46px);
+      margin: 0 0 12px;
+      line-height: 1.15;
+    }
+    .hero p { margin: 0 0 18px; color: var(--sub); }
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(62, 201, 167, 0.08);
+      color: var(--primary);
+      font-weight: 600;
+      border: 1px solid rgba(62, 201, 167, 0.25);
+      margin-bottom: 16px;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .chip {
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--sub);
+      border: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .section {
+      margin-top: 56px;
+    }
+    .section h2 {
+      margin: 0 0 8px;
+      font-size: 26px;
+    }
+    .section .desc { color: var(--sub); margin-bottom: 18px; }
+    .feature {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+    }
+    .feature h3 { margin: 6px 0; font-size: 17px; }
+    .feature p { margin: 4px 0 0; color: var(--sub); font-size: 14px; }
+    .highlight {
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .stat {
+      padding: 16px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(62, 201, 167, 0.12), rgba(21, 28, 37, 0.9));
+      border: 1px solid rgba(62, 201, 167, 0.35);
+    }
+    .stat .value { font-size: 26px; font-weight: 800; }
+    .stat .label { color: var(--sub); margin-top: 6px; }
+    .split {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+    .list-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+    }
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+      margin-top: 6px;
+    }
+    footer {
+      padding: 40px 7vw 60px;
+      color: var(--sub);
+      border-top: 1px solid var(--border);
+      background: var(--muted);
+      margin-top: 64px;
+      text-align: center;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .tab-btn {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-strong) 100%);
+      color: #0c1016;
+      border-color: rgba(62,201,167,0.5);
+      box-shadow: 0 10px 24px rgba(62,201,167,0.28);
+    }
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+    .lang-switch select {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+    }
+    /* video showcase */
+    .video-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #0c1016;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.35);
+      max-width: 840px;
+      margin: 0 auto;
+      aspect-ratio: 16/9;
+    }
+    .video-wrap video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 16px;
+    }
+    .video-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 6px 12px;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      border-radius: 999px;
+      font-size: 13px;
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(6px);
+    }
+    /* modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 20px;
+    }
+    .modal-backdrop.active { display: flex; }
+    .modal {
+      max-width: 640px;
+      width: 100%;
+      background: #111823;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    }
+    .modal header {
+      padding: 0 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .modal-close {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    .qr-box {
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      color: var(--sub);
+      background: rgba(255,255,255,0.02);
+    }
+    .qr-placeholder {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: repeating-linear-gradient(45deg, rgba(255,255,255,0.05), rgba(255,255,255,0.05) 8px, rgba(255,255,255,0.02) 8px, rgba(255,255,255,0.02) 16px);
+    }
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+    @media (max-width: 720px) {
+      header { padding-top: 44px; }
+      .cta { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <img src="./image-jyue18oAlt6vKmINRNSUo.png" alt="KidGuard Logo" style="width:36px;height:36px;border-radius:10px;box-shadow:0 6px 20px rgba(62,201,167,0.35);" />
+      <span>KidGuard 童卫士</span>
+    </div>
+    <span class="badge" data-i18n="badge">全栈一体 · 儿童手机管理</span>
+    <div style="flex:1"></div>
+    <div class="lang-switch">
+      <span data-i18n="lang_label">语言</span>
+      <select id="lang-select">
+        <option value="zh-CN">简体中文</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+    <a class="cta" href="mailto:support@kidguard.com" data-i18n="cta_demo">预约演示</a>
+  </header>
+
+  <main>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="home" data-i18n="tab_home">主页</button>
+      <button class="tab-btn" data-tab="pricing" data-i18n="tab_pricing">定价</button>
+      <button class="tab-btn" data-tab="enterprise" data-i18n="tab_enterprise">企业</button>
+      <button class="tab-btn" data-tab="agreements" data-i18n="tab_agreements">用户协议</button>
+    </div>
+
+    <div class="tab-section active" data-tab="home">
+      <section class="hero panel">
+        <div>
+          <div class="tagline" data-i18n="hero_tagline">守护孩子，也守护安心</div>
+          <h1 data-i18n="hero_title">以双端协同 + 安全后端，打造可信的儿童手机管理体验</h1>
+          <p data-i18n="hero_desc">家长端决策、儿童端执行，配合多重防护和精细化策略，实时守护孩子的数字世界。</p>
+          <div class="chips">
+            <div class="chip" data-i18n="chip_api">19个 REST API · 高可用</div>
+            <div class="chip" data-i18n="chip_uninstall">防卸载保护 · 设备管理员</div>
+            <div class="chip" data-i18n="chip_location">实时/历史轨迹 · 安全围栏</div>
+            <div class="chip" data-i18n="chip_appcontrol">应用锁定 · 屏幕时间</div>
+            <div class="chip" data-i18n="chip_security">JWT双令牌 · AES加密</div>
+          </div>
+          <div style="margin-top:18px; display:flex; gap:12px; flex-wrap:wrap;">
+            <a class="cta" href="mailto:support@kidguard.com" data-i18n="cta_demo_now">立即预约演示</a>
+            <a class="cta ghost" href="../README.md" data-i18n="cta_whitepaper">下载产品白皮书</a>
+          </div>
+        </div>
+        <div class="video-wrap">
+          <div class="video-badge">自动播放 · 静音循环</div>
+          <video autoplay muted loop playsinline preload="metadata" poster="./image-jyue18oAlt6vKmINRNSUo.png">
+            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+            您的浏览器不支持视频播放。
+          </video>
+        </div>
+      </section>
+
+      <section class="section" id="downloads">
+        <h2 data-i18n="downloads_title">软件下载</h2>
+        <p class="desc" data-i18n="downloads_desc">根据设备选择合适的安装包，支持校验与快速更新。</p>
+        <div class="grid">
+          <div class="panel">
+            <h3 data-i18n="parent_title">家长端 App (Android)</h3>
+            <p class="desc" style="margin-top:-6px;" data-i18n="parent_desc">含设备管理、围栏、应用控制、报表。</p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;">
+              <a class="cta" href="#" data-download="parent" data-title="家长端 App" data-desc="设备管理 / 围栏告警 / 应用控制 / 报表" title="下载家长端APK" data-i18n="download_apk">下载 APK</a>
+              <a class="cta ghost" href="#" data-download="parent-log" data-title="家长端更新日志" data-desc="查看版本更新与修复记录" title="查看更新日志" data-i18n="changelog">更新日志</a>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 data-i18n="child_title">儿童端 App (Android)</h3>
+            <p class="desc" style="margin-top:-6px;" data-i18n="child_desc">含数据采集、防卸载、策略执行、后台保活。</p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;">
+              <a class="cta" href="#" data-download="child" data-title="儿童端 App" data-desc="数据采集 / 防卸载 / 策略执行 / 保活" title="下载儿童端APK" data-i18n="download_apk">下载 APK</a>
+              <a class="cta ghost" href="#" data-download="child-guide" data-title="儿童端安装指引" data-desc="权限申请、后台保活、扫码绑定步骤" title="查看安装指引" data-i18n="install_guide">安装指引</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 data-i18n="pain_title">我们解决的核心痛点</h2>
+        <p class="desc" data-i18n="pain_desc">聚焦可见性、可控性、防卸载与数据安全，确保策略长期有效。</p>
+        <div class="panel" style="background: linear-gradient(145deg, rgba(62,201,167,0.08), rgba(12,16,22,0.95));">
+          <div class="list">
+            <div class="list-item">
+              <div class="dot"></div>
+              <div data-i18n="pain_see"><b>看得见</b><br/>实时位置、历史轨迹、进出围栏即时提醒。</div>
+            </div>
+            <div class="list-item">
+              <div class="dot"></div>
+              <div data-i18n="pain_control"><b>管得住</b><br/>应用锁定与时长限制，通讯录与通话短信全程可控。</div>
+            </div>
+            <div class="list-item">
+              <div class="dot"></div>
+              <div data-i18n="pain_remove"><b>卸不掉</b><br/>防卸载、设备管理员权限、多重保活，持续执行策略。</div>
+            </div>
+            <div class="list-item">
+              <div class="dot"></div>
+              <div data-i18n="pain_security"><b>数据安全</b><br/>HTTPS + JWT双令牌 + AES加密，后端三库协同保护隐私。</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 data-i18n="why_title">为什么选择 KidGuard？</h2>
+        <p class="desc" data-i18n="why_desc">不仅是监控，更是可持续的家庭数字安全方案。</p>
+        <div class="grid">
+          <div class="feature">
+            <h3 data-i18n="why_item1_title">双端闭环 · 防卸载</h3>
+            <p data-i18n="why_item1_desc">家长端决策、儿童端执行，设备管理员 + 隐式保活，策略长期生效。</p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="why_item2_title">安全合规 · 多重加固</h3>
+            <p data-i18n="why_item2_desc">JWT双令牌、AES加密、HTTPS传输，输入校验与Helmet安全头全覆盖。</p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="why_item3_title">混合数据库 · 高性能</h3>
+            <p data-i18n="why_item3_desc">MySQL结构化、MongoDB轨迹日志、Redis缓存热数据，性能与扩展性兼得。</p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="why_item4_title">实时定位 · 精细策略</h3>
+            <p data-i18n="why_item4_desc">GPS/基站/WiFi多源融合，围栏告警，动态采集频率平衡续航与实时性。</p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="why_item5_title">应用与通讯全控</h3>
+            <p data-i18n="why_item5_desc">应用锁定/时长限制，通讯录、短信、通话记录同步与黑名单管理。</p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="why_item6_title">可视化报表</h3>
+            <p data-i18n="why_item6_desc">每日/周/月使用报告，行为趋势、异常提醒一目了然。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 data-i18n="diff_title">差异化优势</h2>
+        <p class="desc" data-i18n="diff_desc">与常规家长控制工具相比，我们在安全、可用性与落地深度上全面强化。</p>
+        <div class="split">
+          <div class="panel">
+            <h3 data-i18n="diff_ours_title">KidGuard 童卫士</h3>
+            <div class="list">
+              <div class="list-item"><div class="dot"></div><div data-i18n="diff_ours_1">双令牌认证 + AES加密，守护账号与数据全链路。</div></div>
+              <div class="list-item"><div class="dot"></div><div data-i18n="diff_ours_2">防卸载 + 设备管理员 + 前台服务保活，策略不失效。</div></div>
+              <div class="list-item"><div class="dot"></div><div data-i18n="diff_ours_3">应用锁定、时长限制、围栏告警、远程锁屏一站式。</div></div>
+              <div class="list-item"><div class="dot"></div><div data-i18n="diff_ours_4">三库架构(MySQL/MongoDB/Redis)，实时轨迹与统计兼顾。</div></div>
+              <div class="list-item"><div class="dot"></div><div data-i18n="diff_ours_5">完整API与文档，便于对接企业/教育场景。</div></div>
+            </div>
+          </div>
+          <div class="panel" style="background: rgba(255,255,255,0.02); border-style: dashed;">
+            <h3 data-i18n="diff_trad_title">传统方案痛点</h3>
+            <div class="list">
+              <div class="list-item"><div class="dot" style="background:#f16d6d;"></div><div data-i18n="diff_trad_1">单端方案，容易被卸载或停止。</div></div>
+              <div class="list-item"><div class="dot" style="background:#f16d6d;"></div><div data-i18n="diff_trad_2">仅GPS定位，轨迹容易断档且耗电高。</div></div>
+              <div class="list-item"><div class="dot" style="background:#f16d6d;"></div><div data-i18n="diff_trad_3">缺少应用/通讯精细控制，管理流于形式。</div></div>
+              <div class="list-item"><div class="dot" style="background:#f16d6d;"></div><div data-i18n="diff_trad_4">后端单库或无缓存，访问高峰易掉线。</div></div>
+              <div class="list-item"><div class="dot" style="background:#f16d6d;"></div><div data-i18n="diff_trad_5">安全加固不足，令牌与隐私暴露风险高。</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 data-i18n="scenes_title">覆盖场景</h2>
+        <p class="desc" data-i18n="scenes_desc">从家庭到校园，再到教育机构的批量化管理。</p>
+        <div class="grid">
+          <div class="feature">
+            <h3 data-i18n="scene_home_title">家庭守护</h3>
+            <p data-i18n="scene_home_desc">实时定位、围栏告警、应用时长限制，培养健康使用习惯。</p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="scene_school_title">校园安全</h3>
+            <p data-i18n="scene_school_desc">上课时段锁屏、禁用高风险应用，异常离校即时通知。</p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="scene_training_title">培训/机构</h3>
+            <p data-i18n="scene_training_desc">批量设备管理、统一策略下发，支持订阅与配额发放。</p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="scene_enterprise_title">企业定制</h3>
+            <p data-i18n="scene_enterprise_desc">完整API、Webhook与日志，便于集成到现有系统。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 data-i18n="cred_title">实力背书</h2>
+        <p class="desc" data-i18n="cred_desc">技术选型与实现细节公开透明，可审计、可扩展。</p>
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="value">19</div>
+            <div class="label" data-i18n="cred_api">REST API接口，覆盖认证、设备、定位、数据报表</div>
+          </div>
+          <div class="stat">
+            <div class="value">3</div>
+            <div class="label" data-i18n="cred_db">数据库协同：MySQL + MongoDB + Redis</div>
+          </div>
+          <div class="stat">
+            <div class="value">3</div>
+            <div class="label" data-i18n="cred_endpoints">端侧组合：家长端 + 儿童端 + Node.js后端</div>
+          </div>
+          <div class="stat">
+            <div class="value">24/7</div>
+            <div class="label" data-i18n="cred_alive">前台服务 + 保活策略，持续在线执行限制</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 data-i18n="onboard_title">上手与对接</h2>
+        <p class="desc" data-i18n="onboard_desc">提供现成构建脚本、配置指引和企业级接口。</p>
+        <div class="split">
+          <div class="panel">
+            <h3 data-i18n="onboard_fast_title">快速体验</h3>
+            <div class="list">
+              <div class="list-item"><div class="dot"></div><div data-i18n="onboard_fast_1">后端：Node.js 16+，一键 `npm install && npm run dev`。</div></div>
+              <div class="list-item"><div class="dot"></div><div data-i18n="onboard_fast_2">家长端/儿童端：Android Studio 直接构建，支持 Debug/Release。</div></div>
+              <div class="list-item"><div class="dot"></div><div data-i18n="onboard_fast_3">环境变量示例、数据库初始化脚本已内置。</div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 data-i18n="onboard_enter_title">企业对接</h3>
+            <div class="list">
+              <div class="list-item"><div class="dot"></div><div data-i18n="onboard_enter_1">统一返回格式，完备API文档与测试指南。</div></div>
+              <div class="list-item"><div class="dot"></div><div data-i18n="onboard_enter_2">支持订阅/支付扩展、Webhook、日志留存与TTL清理。</div></div>
+              <div class="list-item"><div class="dot"></div><div data-i18n="onboard_enter_3">可配置域名、证书固定、限流与安全头。</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 data-i18n="cta_ready_title">准备好体验 KidGuard 吗？</h2>
+        <p class="desc" data-i18n="cta_ready_desc">预约演示，获取针对家庭、校园或机构的最佳实践方案。</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+          <a class="cta" href="mailto:support@kidguard.com" data-i18n="cta_demo_now">立即预约演示</a>
+        </div>
+      </section>
+
+      <section class="section" id="agreements-home">
+        <h2 data-i18n="agreements_home_title">协议与政策</h2>
+        <p class="desc" data-i18n="agreements_home_desc">为不同使用场景提供清晰可查的合规文档。</p>
+        <div class="grid">
+          <div class="feature">
+            <h3 data-i18n="agreements_home_user_title">用户协议</h3>
+            <p data-i18n="agreements_home_user_desc">适用于家长端与儿童端的通用使用条款，涵盖账户、授权与责任。</p>
+            <a class="cta ghost" href="#" style="margin-top:10px;" data-i18n="agreements_home_view">查看用户协议</a>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="agreements_home_privacy_title">隐私政策</h3>
+            <p data-i18n="agreements_home_privacy_desc">说明位置、通讯、应用使用等数据的收集、存储与删除流程。</p>
+            <a class="cta ghost" href="#" style="margin-top:10px;" data-i18n="agreements_home_view_privacy">查看隐私政策</a>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="agreements_home_child_title">儿童隐私保护声明</h3>
+            <p data-i18n="agreements_home_child_desc">面向未成年人数据合规的专项说明，包含监护人授权与撤回机制。</p>
+            <a class="cta ghost" href="#" style="margin-top:10px;" data-i18n="agreements_home_view_child">查看儿童隐私</a>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="agreements_home_perm_title">设备与权限指引</h3>
+            <p data-i18n="agreements_home_perm_desc">列出必要权限、申请理由与关闭路径，便于用户自主选择。</p>
+            <a class="cta ghost" href="#" style="margin-top:10px;" data-i18n="agreements_home_view_perm">查看权限指引</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="tab-section" data-tab="pricing">
+      <section class="section panel">
+        <h2 data-i18n="pricing_title">完整定价表（年付优先）</h2>
+        <p class="desc" data-i18n="pricing_desc">摘自定价策略/快速参考文档，涵盖订阅、设备、存储、企业与教育版。</p>
+
+        <div class="section" style="margin-top:10px;">
+          <h3 data-i18n="pricing_personal_title">个人/家庭订阅</h3>
+          <div class="grid">
+            <div class="feature">
+              <h4 data-i18n="pricing_basic_title">基础版</h4>
+              <p data-i18n="pricing_basic_desc">¥60/年（≈¥5/月）· 1台 · 5GB</p>
+            </div>
+            <div class="feature">
+              <h4 data-i18n="pricing_standard_title">标准版 <span class="highlight" data-i18n="pricing_recommended">推荐</span></h4>
+              <p data-i18n="pricing_standard_desc">¥180/年（≈¥15/月）· 3台 · 20GB</p>
+            </div>
+            <div class="feature">
+              <h4 data-i18n="pricing_premium_title">高级版</h4>
+              <p data-i18n="pricing_premium_desc">¥360/年（≈¥30/月）· 5台 · 50GB</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-top:28px;">
+          <h3 data-i18n="pricing_device_title">设备扩展包</h3>
+          <div class="grid">
+            <div class="feature"><h4 data-i18n="pricing_device_1_title">+1台</h4><p data-i18n="pricing_device_1_desc">¥72/年 · 适合临时新增</p></div>
+            <div class="feature"><h4 data-i18n="pricing_device_3_title">+3台</h4><p data-i18n="pricing_device_3_desc">¥180/年 · 省17%</p></div>
+            <div class="feature"><h4 data-i18n="pricing_device_5_title">+5台</h4><p data-i18n="pricing_device_5_desc">¥264/年 · 省27%</p></div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-top:28px;">
+          <h3 data-i18n="pricing_storage_title">存储扩展包</h3>
+          <div class="grid">
+            <div class="feature"><h4>10GB</h4><p data-i18n="pricing_storage_10">¥36/年</p></div>
+            <div class="feature"><h4>50GB</h4><p data-i18n="pricing_storage_50">¥144/年</p></div>
+            <div class="feature"><h4>100GB</h4><p data-i18n="pricing_storage_100">¥240/年</p></div>
+            <div class="feature"><h4>500GB</h4><p data-i18n="pricing_storage_500">¥960/年</p></div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-top:28px;">
+          <h3 data-i18n="pricing_ent_edu_title">企业 / 教育方案</h3>
+          <div class="split">
+            <div class="list">
+              <div class="list-item"><div class="dot"></div><div data-i18n="pricing_ent_starter"><b>企业入门</b>：10台 + 100GB · ¥1,800/年</div></div>
+              <div class="list-item"><div class="dot"></div><div data-i18n="pricing_ent_standard"><b>企业标准</b>：30台 + 500GB · ¥3,600/年 <span class="highlight" data-i18n="pricing_recommended">推荐</span></div></div>
+              <div class="list-item"><div class="dot"></div><div data-i18n="pricing_ent_premium"><b>企业高级</b>：设备/存储定制 · 联系销售</div></div>
+            </div>
+            <div class="list">
+              <div class="list-item"><div class="dot"></div><div data-i18n="pricing_edu_small"><b>教育小型</b>：50台 + 200GB · ¥900/年</div></div>
+              <div class="list-item"><div class="dot"></div><div data-i18n="pricing_edu_medium"><b>教育中型</b>：200台 + 1TB · ¥1,800/年 <span class="highlight" data-i18n="pricing_recommended">推荐</span></div></div>
+              <div class="list-item"><div class="dot"></div><div data-i18n="pricing_edu_large"><b>教育大型</b>：500+台 · 存储定制 · 联系销售</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-grid" style="margin-top:18px;">
+          <div class="stat"><div class="value">17%</div><div class="label" data-i18n="pricing_stat_1">年付平均优惠，减少续费打扰</div></div>
+          <div class="stat"><div class="value">31</div><div class="label" data-i18n="pricing_stat_2">完整方案数量，覆盖订阅/设备/存储</div></div>
+          <div class="stat"><div class="value">8</div><div class="label" data-i18n="pricing_stat_3">会员类SKU，含标准/家庭/高级梯度</div></div>
+          <div class="stat"><div class="value">3</div><div class="label" data-i18n="pricing_stat_4">企业梯度，满足不同规模</div></div>
+        </div>
+
+        <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
+          <a class="cta" href="#" data-i18n="pricing_download">下载完整定价表</a>
+          <a class="cta ghost" href="mailto:support@kidguard.com" data-i18n="pricing_contact">联系销售</a>
+        </div>
+      </section>
+    </div>
+
+    <div class="tab-section" data-tab="enterprise">
+      <section class="section panel">
+        <h2 data-i18n="ent_title">企业与教育方案</h2>
+        <p class="desc" data-i18n="ent_desc">来源：定价快速参考与策略文档。</p>
+        <div class="split">
+          <div class="list">
+            <div class="list-item"><div class="dot"></div><div data-i18n="ent_starter_detail"><b>企业入门版</b>：10台设备 + 100GB 存储，¥1,800/年，适合小型团队。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="ent_standard_detail"><b>企业标准版</b>：30台设备 + 500GB 存储，¥3,600/年（推荐）。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="ent_premium_detail"><b>企业高级版</b>：设备/存储可定制，需联系销售获取报价。</div></div>
+          </div>
+          <div class="list">
+            <div class="list-item"><div class="dot"></div><div data-i18n="ent_edu_small_detail"><b>教育小型</b>：50台 + 200GB，¥900/年，适合幼儿园/小学。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="ent_edu_medium_detail"><b>教育中型</b>：200台 + 1TB，¥1,800/年（推荐）。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="ent_edu_large_detail"><b>教育大型</b>：500+台，存储定制，需销售支持。</div></div>
+          </div>
+        </div>
+        <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
+          <a class="cta" href="mailto:support@kidguard.com" data-i18n="ent_demo">预约企业演示</a>
+          <a class="cta ghost" href="#" data-i18n="ent_whitepaper">下载企业白皮书</a>
+        </div>
+      </section>
+    </div>
+
+    <div class="tab-section" data-tab="agreements">
+      <section class="section panel">
+        <h2 data-i18n="agreements_main_title">用户协议与隐私</h2>
+        <p class="desc" data-i18n="agreements_main_desc">依据项目文档功能范围整理，可直接展示给最终用户。</p>
+        <div class="grid">
+          <div class="feature">
+            <h3 data-i18n="agreements_user_summary_title">用户协议（概要）</h3>
+            <p data-i18n="agreements_user_summary">1) 账户与绑定：需真实邮箱/手机号注册；家长端扫码/邮箱绑定儿童端设备。<br>
+               2) 付费与订阅：套餐价格以定价页面公示为准，自动续费需提前告知，支持取消与退款流程。<br>
+               3) 使用限制：严禁用于非法监控，需取得监护授权；违规可终止服务。<br>
+               4) 责任与免责：因用户未按指引配置权限或违规卸载导致的功能失效不承担责任。<br>
+               5) 终止与注销：可随时解除设备绑定，提交账号注销申请后按流程删除数据。</p>
+            <a class="cta ghost" href="#agreements-user" style="margin-top:10px;" data-i18n="agreements_expand">展开详情</a>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="agreements_privacy_summary_title">隐私政策（概要）</h3>
+            <p data-i18n="agreements_privacy_summary">1) 数据类型：位置（实时/历史）、应用使用、通讯录/短信/通话记录、设备信息。<br>
+               2) 用途：向家长展示监护信息、生成报表、告警通知、设备策略执行。<br>
+               3) 存储与安全：传输全程HTTPS，敏感字段AES加密，后台JWT双令牌，Redis缓存+TTL，MySQL/MongoDB分库存储。<br>
+               4) 保留周期：轨迹与日志按业务配置保留，可申请导出/删除。<br>
+               5) 权限撤回：可在系统设置关闭相关权限并解绑设备。</p>
+            <a class="cta ghost" href="#agreements-privacy" style="margin-top:10px;" data-i18n="agreements_expand">展开详情</a>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="agreements_child_summary_title">儿童隐私保护（概要）</h3>
+            <p data-i18n="agreements_child_summary">1) 监护授权：需监护人同意并完成设备绑定。<br>
+               2) 最小化采集：仅为监护目的采集位置/应用/通讯等必要数据。<br>
+               3) 撤回与删除：监护人可解绑、停用或申请删除相关数据。<br>
+               4) 告知方式：在家长端/官网提供显著提示，变更时再次告知。<br>
+               5) 特殊场景：教育/企业批量部署需签署额外数据处理协议。</p>
+            <a class="cta ghost" href="#agreements-child" style="margin-top:10px;" data-i18n="agreements_expand">展开详情</a>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="agreements_perm_summary_title">设备与权限指引</h3>
+            <p data-i18n="agreements_perm_summary">定位、通讯录、短信、通话、应用使用统计、通知、摄像头/扫码等权限，将在首次使用时逐项申请并说明用途，用户可在系统设置随时关闭并解除绑定。</p>
+            <a class="cta ghost" href="#agreements-permission" style="margin-top:10px;" data-i18n="agreements_expand">展开详情</a>
+          </div>
+        </div>
+
+        <div class="section" id="agreements-user" style="margin-top:28px;">
+          <h3 data-i18n="agreements_user_detail_title">用户协议（详细要点）</h3>
+          <div class="list">
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_user_detail_1"><b>账号注册与绑定</b>：需提供有效邮箱/手机号；家长端扫码/邮箱与儿童端绑定，解绑后将停止数据同步。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_user_detail_2"><b>订阅与费用</b>：定价以产品页公示为准；自动续费需提前告知；支持在续费前取消；退款按当地法规与平台规则执行。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_user_detail_3"><b>禁止用途</b>：不得未经授权监控成年人或非监护对象；不得用于侵犯隐私或违法用途。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_user_detail_4"><b>服务中断</b>：因用户关闭关键权限、卸载或设备系统限制导致功能失效的责任由用户承担。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_user_detail_5"><b>账号与数据终止</b>：用户可提交注销申请；我们在完成身份核验后删除账号及关联数据。</div></div>
+          </div>
+        </div>
+
+        <div class="section" id="agreements-privacy" style="margin-top:28px;">
+          <h3 data-i18n="agreements_privacy_detail_title">隐私政策（详细要点）</h3>
+          <div class="list">
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_privacy_detail_1"><b>采集范围</b>：位置(实时/历史)、应用列表与使用时长、通讯录/短信/通话记录、设备标识与系统信息。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_privacy_detail_2"><b>使用目的</b>：家长查看、围栏告警、屏幕时间/应用限制、报表与趋势分析、异常通知。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_privacy_detail_3"><b>安全措施</b>：HTTPS传输，AES加密存储敏感字段，JWT双令牌，角色与权限校验，Redis缓存+TTL清理，MongoDB TTL日志保留。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_privacy_detail_4"><b>保留与删除</b>：定位/日志按配置周期存储，可通过客服申请导出或删除；解绑后停止新增数据。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_privacy_detail_5"><b>共享与第三方</b>：不向无关第三方共享；如需云存储/地图/推送服务，将在使用前列明并取得同意。</div></div>
+          </div>
+        </div>
+
+        <div class="section" id="agreements-child" style="margin-top:28px;">
+          <h3 data-i18n="agreements_child_detail_title">儿童隐私保护</h3>
+          <div class="list">
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_child_detail_1"><b>监护授权</b>：需由监护人主动安装并绑定，明确监护目的与数据范围。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_child_detail_2"><b>最小化原则</b>：仅收集实现监护所需的数据，不做与监护无关的画像或商业化推荐。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_child_detail_3"><b>撤回机制</b>：监护人可解绑、关闭权限或提交删除数据请求。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_child_detail_4"><b>变更告知</b>：隐私条款变更将通过家长端/官网显著提示并重新确认。</div></div>
+          </div>
+        </div>
+
+        <div class="section" id="agreements-permission" style="margin-top:28px;">
+          <h3 data-i18n="agreements_perm_detail_title">设备与权限指引</h3>
+          <div class="list">
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_perm_detail_1"><b>定位权限</b>：用于实时/历史轨迹与围栏告警；可在系统设置关闭，关闭后无法定位。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_perm_detail_2"><b>通讯与短信/通话</b>：用于联系人管理与风险提醒；可随时关闭并解绑。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_perm_detail_3"><b>应用使用统计</b>：用于屏幕时间与应用锁定；需 Usage Stats / 无障碍（可选）权限。</div></div>
+            <div class="list-item"><div class="dot"></div><div data-i18n="agreements_perm_detail_4"><b>通知与相机</b>：通知用于家长提醒；相机用于扫码绑定；关闭后相关功能受限。</div></div>
+          </div>
+        </div>
+
+        <div style="margin-top:18px; display:flex; gap:12px; flex-wrap:wrap;">
+          <a class="cta ghost" href="mailto:support@kidguard.com" data-i18n="agreements_contact">联系客服获取正式协议PDF</a>
+          <a class="cta" href="#home" onclick="document.querySelector('[data-tab=home]').click(); return false;" data-i18n="agreements_back_home">返回主页</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div data-i18n="footer_main">KidGuard 童卫士 · 用心守护，健康成长</div>
+    <div style="margin-top:6px;" data-i18n="footer_tagline">安全 · 可控 · 不打扰 · 企业级可扩展</div>
+  </footer>
+
+  <div class="modal-backdrop" id="download-modal">
+    <div class="modal">
+      <header>
+        <div>
+          <div class="tagline" style="margin:0;" data-i18n="modal_tagline">下载与扫码</div>
+          <h3 id="modal-title" style="margin:6px 0 0;" data-i18n="modal_title_default">下载</h3>
+          <div id="modal-desc" style="color:var(--sub); font-size:14px; margin-top:4px;" data-i18n="modal_desc_default">请选择合适的安装方式</div>
+        </div>
+        <button class="modal-close" aria-label="关闭" onclick="toggleModal(false)" data-i18n="modal_close">关闭</button>
+      </header>
+      <div class="modal-grid">
+        <div class="qr-box">
+          <div class="qr-placeholder"></div>
+          <div data-i18n="modal_qr_desc">扫描二维码下载/安装<br>（请替换为正式二维码）</div>
+        </div>
+        <div class="list">
+          <div class="list-item"><div class="dot"></div><div data-i18n="modal_tip_1">APK 直链下载（适用于Android）</div></div>
+          <div class="list-item"><div class="dot"></div><div data-i18n="modal_tip_2">如被浏览器拦截，请选择“仍要下载”并校验签名</div></div>
+          <div class="list-item"><div class="dot"></div><div data-i18n="modal_tip_3">安装前允许未知来源应用，安装后按指引授予权限</div></div>
+          <div class="list-item"><div class="dot"></div><div data-i18n="modal_tip_4">如需企业分发/MDM，请联系销售获取专用包</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = document.querySelectorAll('.tab-section');
+    const translations = {
+      'zh-CN': {
+        badge: '全栈一体 · 儿童手机管理',
+        lang_label: '语言',
+        cta_demo: '预约演示',
+        tab_home: '主页',
+        tab_pricing: '定价',
+        tab_enterprise: '企业',
+        tab_agreements: '用户协议',
+        hero_tagline: '守护孩子，也守护安心',
+        hero_title: '以双端协同 + 安全后端，打造可信的儿童手机管理体验',
+        hero_desc: '家长端决策、儿童端执行，配合多重防护和精细化策略，实时守护孩子的数字世界。',
+        chip_api: '19个 REST API · 高可用',
+        chip_uninstall: '防卸载保护 · 设备管理员',
+        chip_location: '实时/历史轨迹 · 安全围栏',
+        chip_appcontrol: '应用锁定 · 屏幕时间',
+        chip_security: 'JWT双令牌 · AES加密',
+        cta_demo_now: '立即预约演示',
+        cta_whitepaper: '下载产品白皮书',
+        downloads_title: '软件下载',
+        downloads_desc: '根据设备选择合适的安装包，支持校验与快速更新。',
+        parent_title: '家长端 App (Android)',
+        parent_desc: '含设备管理、围栏、应用控制、报表。',
+        child_title: '儿童端 App (Android)',
+        child_desc: '含数据采集、防卸载、策略执行、后台保活。',
+        download_apk: '下载 APK',
+        changelog: '更新日志',
+        install_guide: '安装指引',
+        pain_title: '我们解决的核心痛点',
+        pain_desc: '聚焦可见性、可控性、防卸载与数据安全，确保策略长期有效。',
+        pain_see: '看得见：实时位置、历史轨迹、进出围栏即时提醒。',
+        pain_control: '管得住：应用锁定与时长限制，通讯录与通话短信全程可控。',
+        pain_remove: '卸不掉：防卸载、设备管理员权限、多重保活，持续执行策略。',
+        pain_security: '数据安全：HTTPS + JWT双令牌 + AES加密，后端三库协同保护隐私。',
+        cta_ready_title: '准备好体验 KidGuard 吗？',
+        cta_ready_desc: '预约演示，获取针对家庭、校园或机构的最佳实践方案。',
+        why_title: '为什么选择 KidGuard？',
+        why_desc: '不仅是监控，更是可持续的家庭数字安全方案。',
+        why_item1_title: '双端闭环 · 防卸载',
+        why_item1_desc: '家长端决策、儿童端执行，设备管理员 + 隐式保活，策略长期生效。',
+        why_item2_title: '安全合规 · 多重加固',
+        why_item2_desc: 'JWT双令牌、AES加密、HTTPS传输，输入校验与Helmet安全头全覆盖。',
+        why_item3_title: '混合数据库 · 高性能',
+        why_item3_desc: 'MySQL结构化、MongoDB轨迹日志、Redis缓存热数据，性能与扩展性兼得。',
+        why_item4_title: '实时定位 · 精细策略',
+        why_item4_desc: 'GPS/基站/WiFi多源融合，围栏告警，动态采集频率平衡续航与实时性。',
+        why_item5_title: '应用与通讯全控',
+        why_item5_desc: '应用锁定/时长限制，通讯录、短信、通话记录同步与黑名单管理。',
+        why_item6_title: '可视化报表',
+        why_item6_desc: '每日/周/月使用报告，行为趋势、异常提醒一目了然。',
+        diff_title: '差异化优势',
+        diff_desc: '与常规家长控制工具相比，我们在安全、可用性与落地深度上全面强化。',
+        diff_ours_title: 'KidGuard 童卫士',
+        diff_ours_1: '双令牌认证 + AES加密，守护账号与数据全链路。',
+        diff_ours_2: '防卸载 + 设备管理员 + 前台服务保活，策略不失效。',
+        diff_ours_3: '应用锁定、时长限制、围栏告警、远程锁屏一站式。',
+        diff_ours_4: '三库架构(MySQL/MongoDB/Redis)，实时轨迹与统计兼顾。',
+        diff_ours_5: '完整API与文档，便于对接企业/教育场景。',
+        diff_trad_title: '传统方案痛点',
+        diff_trad_1: '单端方案，容易被卸载或停止。',
+        diff_trad_2: '仅GPS定位，轨迹容易断档且耗电高。',
+        diff_trad_3: '缺少应用/通讯精细控制，管理流于形式。',
+        diff_trad_4: '后端单库或无缓存，访问高峰易掉线。',
+        diff_trad_5: '安全加固不足，令牌与隐私暴露风险高。',
+        scenes_title: '覆盖场景',
+        scenes_desc: '从家庭到校园，再到教育机构的批量化管理。',
+        scene_home_title: '家庭守护',
+        scene_home_desc: '实时定位、围栏告警、应用时长限制，培养健康使用习惯。',
+        scene_school_title: '校园安全',
+        scene_school_desc: '上课时段锁屏、禁用高风险应用，异常离校即时通知。',
+        scene_training_title: '培训/机构',
+        scene_training_desc: '批量设备管理、统一策略下发，支持订阅与配额发放。',
+        scene_enterprise_title: '企业定制',
+        scene_enterprise_desc: '完整API、Webhook与日志，便于集成到现有系统。',
+        cred_title: '实力背书',
+        cred_desc: '技术选型与实现细节公开透明，可审计、可扩展。',
+        cred_api: 'REST API接口，覆盖认证、设备、定位、数据报表',
+        cred_db: '数据库协同：MySQL + MongoDB + Redis',
+        cred_endpoints: '端侧组合：家长端 + 儿童端 + Node.js后端',
+        cred_alive: '前台服务 + 保活策略，持续在线执行限制',
+        onboard_title: '上手与对接',
+        onboard_desc: '提供现成构建脚本、配置指引和企业级接口。',
+        onboard_fast_title: '快速体验',
+        onboard_fast_1: '后端：Node.js 16+，一键 `npm install && npm run dev`。',
+        onboard_fast_2: '家长端/儿童端：Android Studio 直接构建，支持 Debug/Release。',
+        onboard_fast_3: '环境变量示例、数据库初始化脚本已内置。',
+        onboard_enter_title: '企业对接',
+        onboard_enter_1: '统一返回格式，完备API文档与测试指南。',
+        onboard_enter_2: '支持订阅/支付扩展、Webhook、日志留存与TTL清理。',
+        onboard_enter_3: '可配置域名、证书固定、限流与安全头。',
+        agreements_home_title: '协议与政策',
+        agreements_home_desc: '为不同使用场景提供清晰可查的合规文档。',
+        agreements_home_user_title: '用户协议',
+        agreements_home_user_desc: '适用于家长端与儿童端的通用使用条款，涵盖账户、授权与责任。',
+        agreements_home_privacy_title: '隐私政策',
+        agreements_home_privacy_desc: '说明位置、通讯、应用使用等数据的收集、存储与删除流程。',
+        agreements_home_child_title: '儿童隐私保护声明',
+        agreements_home_child_desc: '面向未成年人数据合规的专项说明，包含监护人授权与撤回机制。',
+        agreements_home_perm_title: '设备与权限指引',
+        agreements_home_perm_desc: '列出必要权限、申请理由与关闭路径，便于用户自主选择。',
+        agreements_home_view: '查看用户协议',
+        agreements_home_view_privacy: '查看隐私政策',
+        agreements_home_view_child: '查看儿童隐私',
+        agreements_home_view_perm: '查看权限指引',
+        pricing_title: '完整定价表（年付优先）',
+        pricing_desc: '摘自定价策略/快速参考文档，涵盖订阅、设备、存储、企业与教育版。',
+        pricing_personal_title: '个人/家庭订阅',
+        pricing_basic_title: '基础版',
+        pricing_basic_desc: '¥60/年（≈¥5/月）· 1台 · 5GB',
+        pricing_standard_title: '标准版',
+        pricing_standard_desc: '¥180/年（≈¥15/月）· 3台 · 20GB',
+        pricing_premium_title: '高级版',
+        pricing_premium_desc: '¥360/年（≈¥30/月）· 5台 · 50GB',
+        pricing_recommended: '推荐',
+        pricing_device_title: '设备扩展包',
+        pricing_device_1_title: '+1台',
+        pricing_device_1_desc: '¥72/年 · 适合临时新增',
+        pricing_device_3_title: '+3台',
+        pricing_device_3_desc: '¥180/年 · 省17%',
+        pricing_device_5_title: '+5台',
+        pricing_device_5_desc: '¥264/年 · 省27%',
+        pricing_storage_title: '存储扩展包',
+        pricing_storage_10: '¥36/年',
+        pricing_storage_50: '¥144/年',
+        pricing_storage_100: '¥240/年',
+        pricing_storage_500: '¥960/年',
+        pricing_ent_edu_title: '企业 / 教育方案',
+        pricing_ent_starter: '企业入门：10台 + 100GB · ¥1,800/年',
+        pricing_ent_standard: '企业标准：30台 + 500GB · ¥3,600/年',
+        pricing_ent_premium: '企业高级：设备/存储定制 · 联系销售',
+        pricing_edu_small: '教育小型：50台 + 200GB · ¥900/年',
+        pricing_edu_medium: '教育中型：200台 + 1TB · ¥1,800/年',
+        pricing_edu_large: '教育大型：500+台 · 存储定制 · 联系销售',
+        pricing_stat_1: '年付平均优惠，减少续费打扰',
+        pricing_stat_2: '完整方案数量，覆盖订阅/设备/存储',
+        pricing_stat_3: '会员类SKU，含标准/家庭/高级梯度',
+        pricing_stat_4: '企业梯度，满足不同规模',
+        pricing_download: '下载完整定价表',
+        pricing_contact: '联系销售',
+        ent_title: '企业与教育方案',
+        ent_desc: '来源：定价快速参考与策略文档。',
+        ent_starter_detail: '企业入门版：10台设备 + 100GB 存储，¥1,800/年，适合小型团队。',
+        ent_standard_detail: '企业标准版：30台设备 + 500GB 存储，¥3,600/年（推荐）。',
+        ent_premium_detail: '企业高级版：设备/存储可定制，需联系销售获取报价。',
+        ent_edu_small_detail: '教育小型：50台 + 200GB，¥900/年，适合幼儿园/小学。',
+        ent_edu_medium_detail: '教育中型：200台 + 1TB，¥1,800/年（推荐）。',
+        ent_edu_large_detail: '教育大型：500+台，存储定制，需销售支持。',
+        ent_demo: '预约企业演示',
+        ent_whitepaper: '下载企业白皮书',
+        agreements_main_title: '用户协议与隐私',
+        agreements_main_desc: '依据项目文档功能范围整理，可直接展示给最终用户。',
+        agreements_user_summary_title: '用户协议（概要）',
+        agreements_user_summary: '1) 账户与绑定：需真实邮箱/手机号注册；家长端扫码/邮箱绑定儿童端设备。<br>2) 付费与订阅：套餐价格以定价页面公示为准，自动续费需提前告知，支持取消与退款流程。<br>3) 使用限制：严禁用于非法监控，需取得监护授权；违规可终止服务。<br>4) 责任与免责：因用户未按指引配置权限或违规卸载导致的功能失效不承担责任。<br>5) 终止与注销：可随时解除设备绑定，提交账号注销申请后按流程删除数据。',
+        agreements_privacy_summary_title: '隐私政策（概要）',
+        agreements_privacy_summary: '1) 数据类型：位置（实时/历史）、应用使用、通讯录/短信/通话记录、设备信息。<br>2) 用途：向家长展示监护信息、生成报表、告警通知、设备策略执行。<br>3) 存储与安全：传输全程HTTPS，敏感字段AES加密，后台JWT双令牌，Redis缓存+TTL，MySQL/MongoDB分库存储。<br>4) 保留周期：轨迹与日志按业务配置保留，可申请导出/删除。<br>5) 权限撤回：可在系统设置关闭相关权限并解绑设备。',
+        agreements_child_summary_title: '儿童隐私保护（概要）',
+        agreements_child_summary: '1) 监护授权：需监护人同意并完成设备绑定。<br>2) 最小化采集：仅为监护目的采集位置/应用/通讯等必要数据。<br>3) 撤回与删除：监护人可解绑、停用或申请删除相关数据。<br>4) 告知方式：在家长端/官网提供显著提示，变更时再次告知。<br>5) 特殊场景：教育/企业批量部署需签署额外数据处理协议。',
+        agreements_perm_summary_title: '设备与权限指引',
+        agreements_perm_summary: '定位、通讯录、短信、通话、应用使用统计、通知、摄像头/扫码等权限，将在首次使用时逐项申请并说明用途，用户可在系统设置随时关闭并解除绑定。',
+        agreements_expand: '展开详情',
+        agreements_user_detail_title: '用户协议（详细要点）',
+        agreements_user_detail_1: '账号注册与绑定：需提供有效邮箱/手机号；家长端扫码/邮箱与儿童端绑定，解绑后将停止数据同步。',
+        agreements_user_detail_2: '订阅与费用：定价以产品页公示为准；自动续费需提前告知；支持在续费前取消；退款按当地法规与平台规则执行。',
+        agreements_user_detail_3: '禁止用途：不得未经授权监控成年人或非监护对象；不得用于侵犯隐私或违法用途。',
+        agreements_user_detail_4: '服务中断：因用户关闭关键权限、卸载或设备系统限制导致功能失效的责任由用户承担。',
+        agreements_user_detail_5: '账号与数据终止：用户可提交注销申请；我们在完成身份核验后删除账号及关联数据。',
+        agreements_privacy_detail_title: '隐私政策（详细要点）',
+        agreements_privacy_detail_1: '采集范围：位置(实时/历史)、应用列表与使用时长、通讯录/短信/通话记录、设备标识与系统信息。',
+        agreements_privacy_detail_2: '使用目的：家长查看、围栏告警、屏幕时间/应用限制、报表与趋势分析、异常通知。',
+        agreements_privacy_detail_3: '安全措施：HTTPS传输，AES加密存储敏感字段，JWT双令牌，角色与权限校验，Redis缓存+TTL清理，MongoDB TTL日志保留。',
+        agreements_privacy_detail_4: '保留与删除：定位/日志按配置周期存储，可通过客服申请导出或删除；解绑后停止新增数据。',
+        agreements_privacy_detail_5: '共享与第三方：不向无关第三方共享；如需云存储/地图/推送服务，将在使用前列明并取得同意。',
+        agreements_child_detail_title: '儿童隐私保护',
+        agreements_child_detail_1: '监护授权：需由监护人主动安装并绑定，明确监护目的与数据范围。',
+        agreements_child_detail_2: '最小化原则：仅收集实现监护所需的数据，不做与监护无关的画像或商业化推荐。',
+        agreements_child_detail_3: '撤回机制：监护人可解绑、关闭权限或提交删除数据请求。',
+        agreements_child_detail_4: '变更告知：隐私条款变更将通过家长端/官网显著提示并重新确认。',
+        agreements_perm_detail_title: '设备与权限指引',
+        agreements_perm_detail_1: '定位权限：用于实时/历史轨迹与围栏告警；可在系统设置关闭，关闭后无法定位。',
+        agreements_perm_detail_2: '通讯与短信/通话：用于联系人管理与风险提醒；可随时关闭并解绑。',
+        agreements_perm_detail_3: '应用使用统计：用于屏幕时间与应用锁定；需 Usage Stats / 无障碍（可选）权限。',
+        agreements_perm_detail_4: '通知与相机：通知用于家长提醒；相机用于扫码绑定；关闭后相关功能受限。',
+        agreements_contact: '联系客服获取正式协议PDF',
+        agreements_back_home: '返回主页',
+        footer_main: 'KidGuard 童卫士 · 用心守护，健康成长',
+        footer_tagline: '安全 · 可控 · 不打扰 · 企业级可扩展',
+        modal_tagline: '下载与扫码',
+        modal_title_default: '下载',
+        modal_desc_default: '请选择合适的安装方式',
+        modal_close: '关闭',
+        modal_qr_desc: '扫描二维码下载/安装<br>（请替换为正式二维码）',
+        modal_tip_1: 'APK 直链下载（适用于Android）',
+        modal_tip_2: '如被浏览器拦截，请选择“仍要下载”并校验签名',
+        modal_tip_3: '安装前允许未知来源应用，安装后按指引授予权限',
+        modal_tip_4: '如需企业分发/MDM，请联系销售获取专用包'
+      },
+      'en': {
+        badge: 'Full-stack · Parental control for kids',
+        lang_label: 'Language',
+        cta_demo: 'Book a demo',
+        tab_home: 'Home',
+        tab_pricing: 'Pricing',
+        tab_enterprise: 'Enterprise',
+        tab_agreements: 'Agreements',
+        hero_tagline: 'Protect kids, protect peace of mind',
+        hero_title: 'Trusted child phone management with dual-app collaboration + secure backend',
+        hero_desc: 'Parents decide, kids app executes. Multi-layer protections and fine-grained policies keep kids safe in the digital world.',
+        chip_api: '19 REST APIs · High availability',
+        chip_uninstall: 'Uninstall protection · Device admin',
+        chip_location: 'Real-time & history tracks · Geofence',
+        chip_appcontrol: 'App lock · Screen time',
+        chip_security: 'JWT dual tokens · AES encryption',
+        cta_demo_now: 'Book demo now',
+        cta_whitepaper: 'Download whitepaper',
+        downloads_title: 'Downloads',
+        downloads_desc: 'Pick the right package; checksum-friendly and quick updates.',
+        parent_title: 'Parent App (Android)',
+        parent_desc: 'Device management, geofence alerts, app control, reports.',
+        child_title: 'Child App (Android)',
+        child_desc: 'Data capture, anti-uninstall, policy execution, keep-alive.',
+        download_apk: 'Download APK',
+        changelog: 'Changelog',
+        install_guide: 'Install guide',
+        pain_title: 'Core problems we solve',
+        pain_desc: 'Visibility, control, anti-uninstall, and data security to keep policies effective.',
+        pain_see: 'See: live location, history tracks, geofence alerts.',
+        pain_control: 'Control: app lock & time limits, contacts/SMS/call oversight.',
+        pain_remove: 'Unremovable: anti-uninstall, device admin, multi keep-alive.',
+        pain_security: 'Secure: HTTPS + JWT dual tokens + AES; triple-store backend.',
+        cta_ready_title: 'Ready to try KidGuard?',
+        cta_ready_desc: 'Book a demo for family, campus, or organization best practices.',
+        why_title: 'Why Choose KidGuard?',
+        why_desc: 'More than monitoring—a sustainable family digital safety solution.',
+        why_item1_title: 'Dual-App Loop · Anti-Uninstall',
+        why_item1_desc: 'Parents decide, child app executes. Device admin + implicit keep-alive keeps policies effective long-term.',
+        why_item2_title: 'Secure & Compliant · Multi-Layer Hardening',
+        why_item2_desc: 'JWT dual tokens, AES encryption, HTTPS transport, input validation, and Helmet security headers.',
+        why_item3_title: 'Hybrid Database · High Performance',
+        why_item3_desc: 'MySQL for structured data, MongoDB for tracks/logs, Redis for hot cache—performance and scalability.',
+        why_item4_title: 'Real-Time Location · Fine-Grained Policies',
+        why_item4_desc: 'GPS/cell/WiFi fusion, geofence alerts, dynamic collection frequency balances battery and real-time needs.',
+        why_item5_title: 'Full App & Communication Control',
+        why_item5_desc: 'App lock/time limits, contacts/SMS/call sync, and blacklist management.',
+        why_item6_title: 'Visual Reports',
+        why_item6_desc: 'Daily/weekly/monthly usage reports with behavior trends and anomaly alerts.',
+        diff_title: 'Competitive Advantages',
+        diff_desc: 'Compared to conventional parental control tools, we strengthen security, availability, and implementation depth.',
+        diff_ours_title: 'KidGuard',
+        diff_ours_1: 'Dual-token auth + AES encryption protects accounts and data end-to-end.',
+        diff_ours_2: 'Anti-uninstall + device admin + foreground service keep-alive—policies never fail.',
+        diff_ours_3: 'One-stop: app lock, time limits, geofence alerts, remote lock screen.',
+        diff_ours_4: 'Triple-store architecture (MySQL/MongoDB/Redis) handles real-time tracks and stats.',
+        diff_ours_5: 'Complete APIs and docs for enterprise/education integration.',
+        diff_trad_title: 'Traditional Solution Pain Points',
+        diff_trad_1: 'Single-app approach, easily uninstalled or stopped.',
+        diff_trad_2: 'GPS-only location, tracks break easily and drain battery.',
+        diff_trad_3: 'Lacks fine-grained app/communication control—management is superficial.',
+        diff_trad_4: 'Single database or no cache—service drops during peak traffic.',
+        diff_trad_5: 'Insufficient security hardening—high risk of token and privacy exposure.',
+        scenes_title: 'Use Cases',
+        scenes_desc: 'From families to campuses to educational institutions—batch management.',
+        scene_home_title: 'Family Protection',
+        scene_home_desc: 'Real-time location, geofence alerts, app time limits—build healthy usage habits.',
+        scene_school_title: 'Campus Safety',
+        scene_school_desc: 'Lock screen during class, block risky apps, instant alerts for unusual departures.',
+        scene_training_title: 'Training/Institutions',
+        scene_training_desc: 'Batch device management, unified policy deployment, subscription and quota allocation.',
+        scene_enterprise_title: 'Enterprise Custom',
+        scene_enterprise_desc: 'Complete APIs, webhooks, and logs for integration into existing systems.',
+        cred_title: 'Technical Credentials',
+        cred_desc: 'Open and transparent tech stack and implementation details—auditable and extensible.',
+        cred_api: '19 REST APIs covering auth, devices, location, data reports',
+        cred_db: 'Database synergy: MySQL + MongoDB + Redis',
+        cred_endpoints: 'End-to-end: Parent app + Child app + Node.js backend',
+        cred_alive: 'Foreground service + keep-alive strategies—continuous online policy enforcement',
+        onboard_title: 'Getting Started & Integration',
+        onboard_desc: 'Ready-to-use build scripts, configuration guides, and enterprise APIs.',
+        onboard_fast_title: 'Quick Start',
+        onboard_fast_1: 'Backend: Node.js 16+, one command `npm install && npm run dev`.',
+        onboard_fast_2: 'Parent/Child apps: Build directly in Android Studio, Debug/Release supported.',
+        onboard_fast_3: 'Environment variable examples and database init scripts included.',
+        onboard_enter_title: 'Enterprise Integration',
+        onboard_enter_1: 'Unified response format, complete API docs and testing guides.',
+        onboard_enter_2: 'Subscription/payment extensions, webhooks, log retention, and TTL cleanup.',
+        onboard_enter_3: 'Configurable domains, certificate pinning, rate limiting, and security headers.',
+        agreements_home_title: 'Agreements & Policies',
+        agreements_home_desc: 'Clear, accessible compliance documents for different use cases.',
+        agreements_home_user_title: 'User Agreement',
+        agreements_home_user_desc: 'General terms for parent and child apps covering accounts, authorization, and responsibilities.',
+        agreements_home_privacy_title: 'Privacy Policy',
+        agreements_home_privacy_desc: 'Data collection, storage, and deletion processes for location, communications, and app usage.',
+        agreements_home_child_title: 'Children\'s Privacy Protection Statement',
+        agreements_home_child_desc: 'Special compliance statement for minors\' data, including guardian authorization and withdrawal mechanisms.',
+        agreements_home_perm_title: 'Device & Permission Guide',
+        agreements_home_perm_desc: 'Lists required permissions, reasons, and how to disable them for user choice.',
+        agreements_home_view: 'View User Agreement',
+        agreements_home_view_privacy: 'View Privacy Policy',
+        agreements_home_view_child: 'View Children\'s Privacy',
+        agreements_home_view_perm: 'View Permission Guide',
+        pricing_title: 'Complete Pricing Table (Annual Preferred)',
+        pricing_desc: 'From pricing strategy/quick reference docs, covering subscriptions, devices, storage, enterprise, and education.',
+        pricing_personal_title: 'Personal/Family Subscriptions',
+        pricing_basic_title: 'Basic',
+        pricing_basic_desc: '¥60/year (≈¥5/month) · 1 device · 5GB',
+        pricing_standard_title: 'Standard',
+        pricing_standard_desc: '¥180/year (≈¥15/month) · 3 devices · 20GB',
+        pricing_premium_title: 'Premium',
+        pricing_premium_desc: '¥360/year (≈¥30/month) · 5 devices · 50GB',
+        pricing_recommended: 'Recommended',
+        pricing_device_title: 'Device Extensions',
+        pricing_device_1_title: '+1 Device',
+        pricing_device_1_desc: '¥72/year · For temporary additions',
+        pricing_device_3_title: '+3 Devices',
+        pricing_device_3_desc: '¥180/year · Save 17%',
+        pricing_device_5_title: '+5 Devices',
+        pricing_device_5_desc: '¥264/year · Save 27%',
+        pricing_storage_title: 'Storage Extensions',
+        pricing_storage_10: '¥36/year',
+        pricing_storage_50: '¥144/year',
+        pricing_storage_100: '¥240/year',
+        pricing_storage_500: '¥960/year',
+        pricing_ent_edu_title: 'Enterprise / Education Plans',
+        pricing_ent_starter: 'Enterprise Starter: 10 devices + 100GB · ¥1,800/year',
+        pricing_ent_standard: 'Enterprise Standard: 30 devices + 500GB · ¥3,600/year',
+        pricing_ent_premium: 'Enterprise Premium: Custom devices/storage · Contact sales',
+        pricing_edu_small: 'Education Small: 50 devices + 200GB · ¥900/year',
+        pricing_edu_medium: 'Education Medium: 200 devices + 1TB · ¥1,800/year',
+        pricing_edu_large: 'Education Large: 500+ devices · Custom storage · Contact sales',
+        pricing_stat_1: 'Average 17% annual discount, less renewal hassle',
+        pricing_stat_2: '31 total plans covering subscriptions/devices/storage',
+        pricing_stat_3: '8 membership SKUs with standard/family/premium tiers',
+        pricing_stat_4: '3 enterprise tiers for different scales',
+        pricing_download: 'Download Full Pricing Table',
+        pricing_contact: 'Contact Sales',
+        ent_title: 'Enterprise & Education Solutions',
+        ent_desc: 'Source: Pricing quick reference and strategy documents.',
+        ent_starter_detail: 'Enterprise Starter: 10 devices + 100GB storage, ¥1,800/year, suitable for small teams.',
+        ent_standard_detail: 'Enterprise Standard: 30 devices + 500GB storage, ¥3,600/year (Recommended).',
+        ent_premium_detail: 'Enterprise Premium: Customizable devices/storage, contact sales for quote.',
+        ent_edu_small_detail: 'Education Small: 50 devices + 200GB, ¥900/year, suitable for kindergartens/elementary schools.',
+        ent_edu_medium_detail: 'Education Medium: 200 devices + 1TB, ¥1,800/year (Recommended).',
+        ent_edu_large_detail: 'Education Large: 500+ devices, custom storage, sales support required.',
+        ent_demo: 'Book Enterprise Demo',
+        ent_whitepaper: 'Download Enterprise Whitepaper',
+        agreements_main_title: 'User Agreement & Privacy',
+        agreements_main_desc: 'Compiled from project documentation scope, ready for end-user display.',
+        agreements_user_summary_title: 'User Agreement (Summary)',
+        agreements_user_summary: '1) Account & Binding: Real email/phone required for registration; parent app binds child device via QR/email.<br>2) Payment & Subscription: Prices as shown on pricing page; auto-renewal requires advance notice; cancellation and refund processes supported.<br>3) Usage Restrictions: Prohibited for illegal monitoring; guardian authorization required; violations may result in service termination.<br>4) Liability & Disclaimer: Not liable for feature failures due to users not following permission setup or unauthorized uninstall.<br>5) Termination & Deletion: Device binding can be removed anytime; account deletion requests processed to delete data.',
+        agreements_privacy_summary_title: 'Privacy Policy (Summary)',
+        agreements_privacy_summary: '1) Data Types: Location (real-time/history), app usage, contacts/SMS/call records, device info.<br>2) Purpose: Display guardian info to parents, generate reports, alerts, device policy execution.<br>3) Storage & Security: End-to-end HTTPS, AES encryption for sensitive fields, backend JWT dual tokens, Redis cache+TTL, MySQL/MongoDB separate storage.<br>4) Retention Period: Tracks/logs retained per business config; export/deletion requests available.<br>5) Permission Withdrawal: Permissions can be disabled in system settings and device unbound.',
+        agreements_child_summary_title: 'Children\'s Privacy Protection (Summary)',
+        agreements_child_summary: '1) Guardian Authorization: Guardian consent and device binding required.<br>2) Minimal Collection: Only collect necessary data for guardianship (location/apps/communications).<br>3) Withdrawal & Deletion: Guardians can unbind, disable, or request data deletion.<br>4) Notification Method: Prominent notices in parent app/website; re-notification on changes.<br>5) Special Scenarios: Education/enterprise batch deployment requires additional data processing agreements.',
+        agreements_perm_summary_title: 'Device & Permission Guide',
+        agreements_perm_summary: 'Permissions for location, contacts, SMS, calls, app usage stats, notifications, camera/QR scanning will be requested one by one on first use with purpose explanations; users can disable anytime in system settings and unbind.',
+        agreements_expand: 'Expand Details',
+        agreements_user_detail_title: 'User Agreement (Detailed Points)',
+        agreements_user_detail_1: 'Account Registration & Binding: Valid email/phone required; parent app binds child app via QR/email; data sync stops after unbinding.',
+        agreements_user_detail_2: 'Subscription & Fees: Pricing as shown on product page; auto-renewal requires advance notice; cancellation before renewal supported; refunds per local laws and platform rules.',
+        agreements_user_detail_3: 'Prohibited Uses: No unauthorized monitoring of adults or non-guardianship targets; no use for privacy violations or illegal purposes.',
+        agreements_user_detail_4: 'Service Interruption: Users bear responsibility for feature failures due to disabling critical permissions, uninstall, or device system limitations.',
+        agreements_user_detail_5: 'Account & Data Termination: Users can submit deletion requests; we delete accounts and associated data after identity verification.',
+        agreements_privacy_detail_title: 'Privacy Policy (Detailed Points)',
+        agreements_privacy_detail_1: 'Collection Scope: Location (real-time/history), app list and usage duration, contacts/SMS/call records, device identifiers and system info.',
+        agreements_privacy_detail_2: 'Usage Purpose: Parent viewing, geofence alerts, screen time/app restrictions, reports and trend analysis, anomaly notifications.',
+        agreements_privacy_detail_3: 'Security Measures: HTTPS transport, AES encryption for sensitive fields, JWT dual tokens, role and permission checks, Redis cache+TTL cleanup, MongoDB TTL log retention.',
+        agreements_privacy_detail_4: 'Retention & Deletion: Location/logs stored per configured period; export/deletion via customer service; new data stops after unbinding.',
+        agreements_privacy_detail_5: 'Sharing & Third Parties: No sharing with unrelated third parties; cloud storage/map/push services will be listed and consented before use.',
+        agreements_child_detail_title: 'Children\'s Privacy Protection',
+        agreements_child_detail_1: 'Guardian Authorization: Guardian must actively install and bind, clearly stating guardianship purpose and data scope.',
+        agreements_child_detail_2: 'Minimization Principle: Only collect data needed for guardianship; no profiling or commercial recommendations unrelated to guardianship.',
+        agreements_child_detail_3: 'Withdrawal Mechanism: Guardians can unbind, disable permissions, or submit data deletion requests.',
+        agreements_child_detail_4: 'Change Notification: Privacy clause changes will be prominently notified in parent app/website and re-confirmed.',
+        agreements_perm_detail_title: 'Device & Permission Guide',
+        agreements_perm_detail_1: 'Location Permission: For real-time/history tracks and geofence alerts; can be disabled in system settings; location unavailable after disabling.',
+        agreements_perm_detail_2: 'Contacts & SMS/Calls: For contact management and risk alerts; can be disabled and unbound anytime.',
+        agreements_perm_detail_3: 'App Usage Stats: For screen time and app locking; requires Usage Stats / Accessibility (optional) permissions.',
+        agreements_perm_detail_4: 'Notifications & Camera: Notifications for parent alerts; camera for QR binding; related features limited after disabling.',
+        agreements_contact: 'Contact Support for Official Agreement PDF',
+        agreements_back_home: 'Back to Home',
+        footer_main: 'KidGuard · Protect with care, grow healthy',
+        footer_tagline: 'Secure · Controllable · Non-intrusive · Enterprise Scalable',
+        modal_tagline: 'Download & QR Code',
+        modal_title_default: 'Download',
+        modal_desc_default: 'Please choose the appropriate installation method',
+        modal_close: 'Close',
+        modal_qr_desc: 'Scan QR code to download/install<br>(Please replace with official QR code)',
+        modal_tip_1: 'Direct APK download (for Android)',
+        modal_tip_2: 'If blocked by browser, choose "Download anyway" and verify signature',
+        modal_tip_3: 'Allow unknown sources before installation, grant permissions per guide after installation',
+        modal_tip_4: 'For enterprise distribution/MDM, contact sales for dedicated package'
+      }
+    };
+
+    function applyI18n(lang) {
+      const dict = translations[lang] || translations['zh-CN'];
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.innerHTML = dict[key];
+      });
+      const select = document.getElementById('lang-select');
+      if (select) select.value = lang;
+    }
+
+    function detectLang() {
+      const nav = navigator.language || navigator.userLanguage || 'zh-CN';
+      if (nav.toLowerCase().startsWith('en')) return 'en';
+      return 'zh-CN';
+    }
+
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(b => b.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.getAttribute('data-tab');
+        const section = document.querySelector(`.tab-section[data-tab="${target}"]`);
+        if (section) section.classList.add('active');
+      });
+    });
+
+    const initialLang = detectLang();
+    applyI18n(initialLang);
+    document.getElementById('lang-select')?.addEventListener('change', (e) => {
+      applyI18n(e.target.value);
+    });
+
+    function toggleModal(show, title = '', desc = '') {
+      const modal = document.getElementById('download-modal');
+      if (!modal) return;
+      const currentLang = document.documentElement.lang || 'zh-CN';
+      const dict = translations[currentLang] || translations['zh-CN'];
+      if (show) {
+        document.getElementById('modal-title').textContent = title || dict.modal_title_default || '下载';
+        document.getElementById('modal-desc').textContent = desc || dict.modal_desc_default || '请选择合适的安装方式';
+        modal.classList.add('active');
+      } else {
+        modal.classList.remove('active');
+      }
+    }
+
+    document.querySelectorAll('[data-download]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const title = btn.getAttribute('data-title') || '下载';
+        const desc = btn.getAttribute('data-desc') || '请选择合适的安装方式';
+        toggleModal(true, title, desc);
+      });
+    });
+
+    document.getElementById('download-modal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) toggleModal(false);
+    });
+  </script>
+</body>
+</html>
+
