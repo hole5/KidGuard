@@ -245,10 +245,78 @@
     .lang-content.active {
       display: block;
     }
+
+    /* 登录界面样式 */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+    .login-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .login-header img {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    .login-header h2 {
+      font-size: 22px;
+      color: var(--text);
+    }
+    .login-alert {
+      margin-bottom: 20px;
+    }
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <!-- 登录界面 -->
+  <div id="login-container" class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <img src="./image-jyue18oAlt6vKmINRNSUo.png" alt="Logo">
+        <h2>Landing Page<br/>管理后台</h2>
+      </div>
+      <div id="login-alert" class="login-alert"></div>
+      <form class="login-form" onsubmit="return handleLogin(event)">
+        <div class="form-group">
+          <label for="username">用户名</label>
+          <input type="text" id="username" placeholder="请输入管理员用户名" required>
+        </div>
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input type="password" id="password" placeholder="请输入管理员密码" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-login">登录</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 管理后台主内容 -->
+  <div id="admin-container" class="container" style="display: none;">
     <aside class="sidebar">
       <div class="sidebar-header">
         <img src="./image-jyue18oAlt6vKmINRNSUo.png" alt="Logo">
@@ -627,19 +695,65 @@
     <button class="preview-btn" onclick="previewPage()" title="预览主页" style="position: relative; width: 60px; height: 60px;">👁️</button>
     <button class="preview-btn" onclick="exportConfig()" title="导出配置" style="position: relative; width: 60px; height: 60px; background: linear-gradient(135deg, #3b82f6, #2563eb);">💾</button>
     <button class="preview-btn" onclick="importConfig()" title="导入配置" style="position: relative; width: 60px; height: 60px; background: linear-gradient(135deg, #8b5cf6, #7c3aed);">📥</button>
+    <button class="preview-btn" onclick="handleLogout()" title="退出登录" style="position: relative; width: 60px; height: 60px; background: linear-gradient(135deg, #ef4444, #dc2626);">🚪</button>
   </div>
 
   <script>
     // API 基础路径
     const API_BASE = '/api/v1/landing-page';
     const STORAGE_KEY = 'landing_page_config';
+    const ADMIN_USERNAME = 'tnyuan';
+    const ADMIN_PASSWORD = 'DLmima168';
     let authToken = localStorage.getItem('admin_token');
     
-    // 检查登录状态
-    if (!authToken) {
-      // 如果没有 token，提示用户登录
-      alert('请先登录管理后台获取访问权限');
-      window.location.href = '/admin.html';
+    // 处理登录
+    function handleLogin(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        // 登录成功，生成一个简单的 token
+        authToken = 'admin_' + Date.now();
+        localStorage.setItem('admin_token', authToken);
+        
+        // 隐藏登录界面，显示管理后台
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('admin-container').style.display = 'flex';
+        
+        // 加载配置
+        loadConfig();
+        
+        return true;
+      } else {
+        // 登录失败，显示错误信息
+        showLoginAlert('用户名或密码错误', 'error');
+        return false;
+      }
+    }
+    
+    // 处理退出登录
+    function handleLogout() {
+      localStorage.removeItem('admin_token');
+      authToken = null;
+      
+      // 隐藏管理后台，显示登录界面
+      document.getElementById('admin-container').style.display = 'none';
+      document.getElementById('login-container').style.display = 'flex';
+      
+      // 清空表单
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+    }
+    
+    // 显示登录提示
+    function showLoginAlert(message, type) {
+      const container = document.getElementById('login-alert');
+      container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 3000);
     }
     
     // 从服务器读取当前配置
@@ -1095,10 +1209,22 @@
       });
     });
 
+    // 检查登录状态并初始化
+    function init() {
+      if (authToken) {
+        // 已登录，显示管理后台
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('admin-container').style.display = 'flex';
+        loadConfig();
+      } else {
+        // 未登录，显示登录界面
+        document.getElementById('login-container').style.display = 'flex';
+        document.getElementById('admin-container').style.display = 'none';
+      }
+    }
+    
     // 初始化
-    (async () => {
-      await loadConfig();
-    })();
+    init();
   </script>
 </body>
 </html>
